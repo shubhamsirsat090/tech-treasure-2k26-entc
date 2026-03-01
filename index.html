@@ -159,6 +159,15 @@
 `;
 
         document.getElementById("puzzle").innerText = puzzles[loc].question;
+        let teamInput = document.getElementById("team");
+        teamInput.addEventListener("blur", function () {
+            let t = teamInput.value;
+            let savedHint = localStorage.getItem("team_" + t + "_lastHint");
+            if (savedHint) {
+                document.getElementById("message").innerHTML =
+                    "<div class='success'>✔ Level Already Cleared!</div><div class='hint'>" + savedHint + "</div>";
+            }
+        });
 
         /* ================= GAME LOGIC ================= */
 
@@ -166,7 +175,10 @@
 
             let team = document.getElementById("team").value;
             let code = document.getElementById("code").value;
-            let ans = document.getElementById("answer").value.toLowerCase();
+            let ans = document.getElementById("answer").value
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, " ");
             let msg = document.getElementById("message");
 
             msg.innerHTML = "";
@@ -183,7 +195,7 @@
                 return;
             }
 
-            if (ans !== puzzles[loc].answer) {
+            if (ans !== puzzles[loc].answer.toLowerCase()) {
                 msg.innerHTML = "<div class='error'>Wrong Answer!</div>";
                 return;
             }
@@ -192,6 +204,7 @@
 
             if (loc === "start") {
                 localStorage.setItem("team_" + team, route[0]);
+                localStorage.setItem("team_" + team + "_lastHint", hints[route[0]]);
                 msg.innerHTML = "<div class='success'>✔ Level Cleared!</div><div class='hint'>" + hints[route[0]] + "</div>";
                 return;
             }
@@ -200,12 +213,13 @@
 
             if (index !== -1 && index < route.length - 1) {
                 localStorage.setItem("team_" + team, route[index + 1]);
+                localStorage.setItem("team_" + team + "_lastHint", hints[route[index + 1]]);
                 msg.innerHTML = "<div class='success'>✔ Level Cleared!</div><div class='hint'>" + hints[route[index + 1]] + "</div>";
             }
             else if (loc === "chem") {
                 localStorage.setItem("team_" + team, "Completed");
                 localStorage.setItem("team_" + team + "_finish", Date.now());
-                msg.innerHTML = "<div class='success'>🏆 TREASURE UNLOCKED!</div>";
+                msg.innerHTML = "<div class='success'>🏆 TREASURE UNLOCKED! Search Nearby of Tree</div>";
             }
 
         }
