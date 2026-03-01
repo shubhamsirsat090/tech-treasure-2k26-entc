@@ -113,9 +113,9 @@ hostel:"Find the building known for louder debates and hanging jerseys. A tall r
 chem:"Where first-year experiments once happened, a big tree watches silently."
 };
 
-/* MAIN UI */
+/* UI */
 document.getElementById("app").innerHTML = `
-<h1>🏴‍☠️ Tech-Treasure 2K26 🏆</h1>
+<h1>🏴‍☠️ Tech-Treasure Hunt 2K26 🏆</h1>
 <div class="box">
 <p id="puzzle"></p>
 <input id="team" placeholder="Team Number (01-10)">
@@ -148,19 +148,29 @@ return;
 }
 
 let saved = localStorage.getItem("team_"+team);
+let route = getRoute(parseInt(team));
 
-// Strict Route Lock
-if(saved && saved !== loc){
-msg.innerHTML="<div class='error'>You have not unlocked this level yet!</div>";
-return;
+/* Improved Route Lock */
+if(saved){
+
+    if(!route.includes(loc) && loc !== "start"){
+        msg.innerHTML="<div class='error'>Invalid Location!</div>";
+        return;
+    }
+
+    let currentIndex = route.indexOf(saved);
+    let qrIndex = route.indexOf(loc);
+
+    if(qrIndex > currentIndex){
+        msg.innerHTML="<div class='error'>You have not unlocked this level yet!</div>";
+        return;
+    }
 }
 
 if(ans !== puzzles[loc].answer.toLowerCase()){
 msg.innerHTML="<div class='error'>Wrong Answer!</div>";
 return;
 }
-
-let route = getRoute(parseInt(team));
 
 if(loc==="start"){
 localStorage.setItem("team_"+team, route[0]);
@@ -177,12 +187,12 @@ msg.innerHTML="<div class='success'>✔ Level Cleared!</div><div class='hint'>"+
 else if(loc==="chem"){
 localStorage.setItem("team_"+team, "Completed");
 localStorage.setItem("team_"+team+"_finish", Date.now());
-msg.innerHTML="<div class='success'>🏆 TREASURE UNLOCKED!</div>";
+msg.innerHTML="<div class='success'>🏆 TREASURE UNLOCKED!</div><div class='hint'>Search nearby a tree 🌳</div>";
 }
 
 }
 
-/* ADMIN LOGIN */
+/* ADMIN */
 function showAdminLogin(){
 let pass = prompt("Enter Admin Password:");
 if(pass === ADMIN_PASSWORD){
@@ -192,7 +202,6 @@ alert("Wrong Password!");
 }
 }
 
-/* ADMIN PANEL */
 function showAdminPanel(){
 
 let html = "<h1>🔐 ADMIN PANEL</h1><div class='admin-box'>";
@@ -223,7 +232,6 @@ html += "<p>"+(index+1)+". Team "+r.team+"</p>";
 }
 
 html += "<br><button onclick='resetAll()'>Reset All</button></div>";
-
 document.getElementById("app").innerHTML = html;
 }
 
