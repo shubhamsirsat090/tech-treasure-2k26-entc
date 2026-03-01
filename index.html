@@ -1,152 +1,121 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech-Treasure Hunt 2K26</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech-Treasure 2K26</title>
 
-    <style>
-        body {
-            background: radial-gradient(circle at top, #0f172a, #000000);
-            color: white;
-            font-family: 'Trebuchet MS', sans-serif;
-            text-align: center;
-            padding: 30px;
-        }
-
-        h1 {
-            font-size: 34px;
-            color: #facc15;
-            text-shadow: 0 0 15px #facc15;
-        }
-
-        .box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 750px;
-            margin: auto;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
-        }
-
-        input {
-            padding: 12px;
-            margin: 8px;
-            width: 85%;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            background: #facc15;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        button:hover {
-            background: #fde047;
-        }
-
-        .success {
-            color: #22c55e;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .error {
-            color: #ef4444;
-            font-weight: bold;
-        }
-
-        .hint {
-            font-size: 22px;
-            margin-top: 15px;
-            color: #38bdf8;
-        }
-
-        .admin-btn {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            opacity: 0.2;
-        }
-
-        .admin-btn:hover {
-            opacity: 1;
-        }
-
-        .admin-box {
-            background: #111827;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-    </style>
+<style>
+body{
+background: radial-gradient(circle at top,#0f172a,#000000);
+color:white;
+font-family: 'Trebuchet MS', sans-serif;
+text-align:center;
+padding:30px;
+}
+h1{
+font-size:34px;
+color:#facc15;
+text-shadow:0 0 15px #facc15;
+}
+.box{
+background:rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+max-width:750px;
+margin:auto;
+box-shadow:0 0 40px rgba(255,215,0,0.2);
+}
+input{
+padding:12px;
+margin:8px;
+width:85%;
+border-radius:8px;
+border:none;
+font-size:16px;
+}
+button{
+padding:10px 20px;
+border-radius:8px;
+border:none;
+background:#facc15;
+color:black;
+font-weight:bold;
+cursor:pointer;
+margin:5px;
+}
+button:hover{ background:#fde047; }
+.success{ color:#22c55e; font-size:20px; font-weight:bold; }
+.error{ color:#ef4444; font-weight:bold; }
+.hint{ font-size:22px; margin-top:15px; color:#38bdf8; }
+.admin-btn{
+position:fixed;
+bottom:10px;
+right:10px;
+opacity:0.2;
+}
+.admin-btn:hover{ opacity:1; }
+.admin-box{
+background:#111827;
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+}
+</style>
 </head>
 
 <body>
 
-    <div id="app"></div>
-    <button class="admin-btn" onclick="showAdminLogin()">⚙</button>
+<div id="app"></div>
+<button class="admin-btn" onclick="showAdminLogin()">⚙</button>
 
-    <script>
+<script>
 
-        const ADMIN_PASSWORD = "1234";
-        const loc = new URLSearchParams(window.location.search).get("loc") || "start";
+const ADMIN_PASSWORD = "1234";
+const loc = new URLSearchParams(window.location.search).get("loc") || "start";
 
-        /* ================= ROUTES ================= */
+/* ROUTES */
+const routeA = ["hod","canteen","parking","agri","nasa","hostel","chem"];
+const routeB = ["canteen","parking","agri","nasa","hostel","hod","chem"];
+const routeC = ["parking","agri","nasa","hostel","hod","canteen","chem"];
 
-        const routeA = ["hod", "canteen", "parking", "agri", "nasa", "hostel", "chem"];
-        const routeB = ["canteen", "parking", "agri", "nasa", "hostel", "hod", "chem"];
-        const routeC = ["parking", "agri", "nasa", "hostel", "hod", "canteen", "chem"];
+function getRoute(team){
+if(team>=1 && team<=3) return routeA;
+if(team>=4 && team<=6) return routeB;
+return routeC;
+}
 
-        function getRoute(team) {
-            if (team >= 1 && team <= 3) return routeA;
-            if (team >= 4 && team <= 6) return routeB;
-            return routeC;
-        }
+/* TEAM CODES */
+const teamCodes = {
+"01":"TT26A9","02":"TT26B4","03":"TT26C7","04":"TT26D2","05":"TT26E8",
+"06":"TT26F3","07":"TT26G6","08":"TT26H1","09":"TT26J5","10":"TT26K9"
+};
 
-        /* ================= TEAM CODES ================= */
+/* PUZZLES */
+const puzzles = {
+start:{ question:"I am always in front of you but can never be seen. What am I?", answer:"future" },
+hod:{ question:"2 fathers and 2 sons catch 3 fish. How many people? (number only)", answer:"3" },
+canteen:{ question:"What has keys but cannot open locks?", answer:"keyboard" },
+parking:{ question:"I speak without a mouth and hear without ears. What am I?", answer:"echo" },
+agri:{ question:"What comes once in a minute, twice in a moment, but never in a thousand years?", answer:"m" },
+nasa:{ question:"The more you take, the more you leave behind. What am I?", answer:"footsteps" },
+hostel:{ question:"I have branches, but no fruit, trunk, or leaves. What am I?", answer:"bank" },
+chem:{ question:"Unscramble this word: ERSUTRAE", answer:"treasure" }
+};
 
-        const teamCodes = {
-            "01": "TT26A9", "02": "TT26B4", "03": "TT26C7", "04": "TT26D2", "05": "TT26E8",
-            "06": "TT26F3", "07": "TT26G6", "08": "TT26H1", "09": "TT26J5", "10": "TT26K9"
-        };
+const hints = {
+hod:"The leader of ENTC without a crown waits behind a special door.",
+canteen:"Where hunger fades and tea flows, students gather daily.",
+parking:"Many wheels rest here after long journeys.",
+agri:"Move toward the college where crops are studied. A metal boundary stands beside it.",
+nasa:"Stand at the heart of campus where paths cross like signals.",
+hostel:"Find the building known for louder debates and hanging jerseys. A tall rooted guard waits outside.",
+chem:"Where first-year experiments once happened, a big tree watches silently."
+};
 
-        /* ================= PUZZLES ================= */
-
-        const puzzles = {
-            start: { question: "I am always in front of you but can never be seen. What am I?", answer: "future" },
-            hod: { question: "2 fathers and 2 sons catch 3 fish. How many people? (number only)", answer: "3" },
-            canteen: { question: "What has keys but cannot open locks?", answer: "keyboard" },
-            parking: { question: "I speak without a mouth and hear without ears. What am I?", answer: "echo" },
-            agri: { question: "What comes once in a minute, twice in a moment, but never in a thousand years?", answer: "m" },
-            nasa: { question: "The more you take, the more you leave behind. What am I?", answer: "footsteps" },
-            hostel: { question: "I have branches, but no fruit, trunk, or leaves. What am I?", answer: "bank" },
-            chem: { question: "Unscramble this word: ERSUTRAE", answer: "treasure" }
-        };
-
-        const hints = {
-            hod: "The leader of ENTC without a crown waits behind a special door.",
-            canteen: "Where hunger fades and tea flows, students gather daily.",
-            parking: "Many wheels rest here after long journeys.",
-            agri: "Move toward the college where crops are studied. A metal boundary stands beside it.",
-            nasa: "Stand at the heart of campus where paths cross like signals.",
-            hostel: "Find the building known for louder debates and hanging jerseys. A tall rooted guard waits outside.",
-            chem: "Where first-year experiments once happened, a big tree watches silently."
-        };
-
-        /* ================= MAIN UI ================= */
-
-        document.getElementById("app").innerHTML = `
-<h1>🏴‍☠️ Tech-Treasure Hunt 2K26 🏆</h1>
+/* MAIN UI */
+document.getElementById("app").innerHTML = `
+<h1>🏴‍☠️ Tech-Treasure 2K26 🏆</h1>
 <div class="box">
 <p id="puzzle"></p>
 <input id="team" placeholder="Team Number (01-10)">
@@ -158,134 +127,117 @@
 </div>
 `;
 
-        document.getElementById("puzzle").innerText = puzzles[loc].question;
-        let teamInput = document.getElementById("team");
-        teamInput.addEventListener("blur", function () {
-            let t = teamInput.value;
-            let savedHint = localStorage.getItem("team_" + t + "_lastHint");
-            if (savedHint) {
-                document.getElementById("message").innerHTML =
-                    "<div class='success'>✔ Level Already Cleared!</div><div class='hint'>" + savedHint + "</div>";
-            }
-        });
+document.getElementById("puzzle").innerText = puzzles[loc].question;
 
-        /* ================= GAME LOGIC ================= */
+/* GAME LOGIC */
+function checkAnswer(){
 
-        function checkAnswer() {
+let team = document.getElementById("team").value.trim();
+let code = document.getElementById("code").value.trim();
+let ans = document.getElementById("answer").value
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g," ");
 
-            let team = document.getElementById("team").value;
-            let code = document.getElementById("code").value;
-            let ans = document.getElementById("answer").value
-                .toLowerCase()
-                .trim()
-                .replace(/\s+/g, " ");
-            let msg = document.getElementById("message");
+let msg = document.getElementById("message");
+msg.innerHTML="";
 
-            msg.innerHTML = "";
+if(!teamCodes[team] || teamCodes[team]!==code){
+msg.innerHTML="<div class='error'>Wrong Team or Secret Code!</div>";
+return;
+}
 
-            if (!teamCodes[team] || teamCodes[team] !== code) {
-                msg.innerHTML = "<div class='error'>Wrong Team or Secret Code!</div>";
-                return;
-            }
+let saved = localStorage.getItem("team_"+team);
 
-            let saved = localStorage.getItem("team_" + team);
+// Strict Route Lock
+if(saved && saved !== loc){
+msg.innerHTML="<div class='error'>You have not unlocked this level yet!</div>";
+return;
+}
 
-            if (saved && saved !== loc && loc !== "start") {
-                msg.innerHTML = "<div class='error'>You have not unlocked this level yet!</div>";
-                return;
-            }
+if(ans !== puzzles[loc].answer.toLowerCase()){
+msg.innerHTML="<div class='error'>Wrong Answer!</div>";
+return;
+}
 
-            if (ans !== puzzles[loc].answer.toLowerCase()) {
-                msg.innerHTML = "<div class='error'>Wrong Answer!</div>";
-                return;
-            }
+let route = getRoute(parseInt(team));
 
-            let route = getRoute(parseInt(team));
+if(loc==="start"){
+localStorage.setItem("team_"+team, route[0]);
+msg.innerHTML="<div class='success'>✔ Level Cleared!</div><div class='hint'>"+hints[route[0]]+"</div>";
+return;
+}
 
-            if (loc === "start") {
-                localStorage.setItem("team_" + team, route[0]);
-                localStorage.setItem("team_" + team + "_lastHint", hints[route[0]]);
-                msg.innerHTML = "<div class='success'>✔ Level Cleared!</div><div class='hint'>" + hints[route[0]] + "</div>";
-                return;
-            }
+let index = route.indexOf(loc);
 
-            let index = route.indexOf(loc);
+if(index !== -1 && index < route.length-1){
+localStorage.setItem("team_"+team, route[index+1]);
+msg.innerHTML="<div class='success'>✔ Level Cleared!</div><div class='hint'>"+hints[route[index+1]]+"</div>";
+}
+else if(loc==="chem"){
+localStorage.setItem("team_"+team, "Completed");
+localStorage.setItem("team_"+team+"_finish", Date.now());
+msg.innerHTML="<div class='success'>🏆 TREASURE UNLOCKED!</div>";
+}
 
-            if (index !== -1 && index < route.length - 1) {
-                localStorage.setItem("team_" + team, route[index + 1]);
-                localStorage.setItem("team_" + team + "_lastHint", hints[route[index + 1]]);
-                msg.innerHTML = "<div class='success'>✔ Level Cleared!</div><div class='hint'>" + hints[route[index + 1]] + "</div>";
-            }
-            else if (loc === "chem") {
-                localStorage.setItem("team_" + team, "Completed");
-                localStorage.setItem("team_" + team + "_finish", Date.now());
-                msg.innerHTML = "<div class='success'>🏆 TREASURE UNLOCKED! Search Nearby of Tree</div>";
-            }
+}
 
-        }
+/* ADMIN LOGIN */
+function showAdminLogin(){
+let pass = prompt("Enter Admin Password:");
+if(pass === ADMIN_PASSWORD){
+showAdminPanel();
+}else{
+alert("Wrong Password!");
+}
+}
 
-        /* ================= ADMIN LOGIN ================= */
+/* ADMIN PANEL */
+function showAdminPanel(){
 
-        function showAdminLogin() {
-            let pass = prompt("Enter Admin Password:");
-            if (pass === ADMIN_PASSWORD) {
-                showAdminPanel();
-            } else {
-                alert("Wrong Password!");
-            }
-        }
+let html = "<h1>🔐 ADMIN PANEL</h1><div class='admin-box'>";
+let ranking = [];
 
-        /* ================= ADMIN PANEL ================= */
+for(let i=1;i<=10;i++){
+let team = i.toString().padStart(2,'0');
+let progress = localStorage.getItem("team_"+team) || "Not Started";
+let finish = localStorage.getItem("team_"+team+"_finish");
 
-        function showAdminPanel() {
+html += "<p>Team "+team+" → "+progress+"</p>";
 
-            let html = "<h1>🔐 ADMIN PANEL</h1><div class='admin-box'>";
+if(finish){
+ranking.push({team:team,time:parseInt(finish)});
+}
+}
 
-            let ranking = [];
+ranking.sort((a,b)=>a.time-b.time);
 
-            for (let i = 1; i <= 10; i++) {
-                let team = i.toString().padStart(2, '0');
-                let progress = localStorage.getItem("team_" + team) || "Not Started";
-                let finish = localStorage.getItem("team_" + team + "_finish");
+html += "<h2>🏆 Rankings</h2>";
 
-                html += "<p>Team " + team + " → " + progress + "</p>";
+if(ranking.length===0){
+html += "<p>No team finished yet.</p>";
+}else{
+ranking.forEach((r,index)=>{
+html += "<p>"+(index+1)+". Team "+r.team+"</p>";
+});
+}
 
-                if (finish) {
-                    ranking.push({ team: team, time: parseInt(finish) });
-                }
-            }
+html += "<br><button onclick='resetAll()'>Reset All</button></div>";
 
-            ranking.sort((a, b) => a.time - b.time);
+document.getElementById("app").innerHTML = html;
+}
 
-            html += "<h2>🏆 Rankings</h2>";
+function resetAll(){
+for(let i=1;i<=10;i++){
+let team = i.toString().padStart(2,'0');
+localStorage.removeItem("team_"+team);
+localStorage.removeItem("team_"+team+"_finish");
+}
+alert("All data reset!");
+location.reload();
+}
 
-            if (ranking.length === 0) {
-                html += "<p>No team finished yet.</p>";
-            } else {
-                ranking.forEach((r, index) => {
-                    html += "<p>" + (index + 1) + ". Team " + r.team + "</p>";
-                });
-            }
-
-            html += "<br><button onclick='resetAll()'>Reset All</button></div>";
-
-            document.getElementById("app").innerHTML = html;
-        }
-
-        /* ================= RESET ================= */
-
-        function resetAll() {
-            for (let i = 1; i <= 10; i++) {
-                let team = i.toString().padStart(2, '0');
-                localStorage.removeItem("team_" + team);
-                localStorage.removeItem("team_" + team + "_finish");
-            }
-            alert("All data reset!");
-            location.reload();
-        }
-
-    </script>
+</script>
 
 </body>
-
 </html>
