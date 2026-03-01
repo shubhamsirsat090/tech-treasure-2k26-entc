@@ -150,18 +150,25 @@ return;
 let saved = localStorage.getItem("team_"+team);
 let route = getRoute(parseInt(team));
 
-/* Improved Route Lock */
-if(saved){
+// If start level
+if(loc === "start"){
 
-    if(!route.includes(loc) && loc !== "start"){
-        msg.innerHTML="<div class='error'>Invalid Location!</div>";
+    // If team already started, block restarting
+    if(saved){
+        msg.innerHTML="<div class='error'>Game already started for this team!</div>";
         return;
     }
 
-    let currentIndex = route.indexOf(saved);
-    let qrIndex = route.indexOf(loc);
+}else{
 
-    if(qrIndex > currentIndex){
+    // If team has not started but trying other QR
+    if(!saved){
+        msg.innerHTML="<div class='error'>Please start from the starting location.</div>";
+        return;
+    }
+
+    // Allow only the exact unlocked location
+    if(saved !== loc){
         msg.innerHTML="<div class='error'>You have not unlocked this level yet!</div>";
         return;
     }
@@ -249,3 +256,4 @@ location.reload();
 
 </body>
 </html>
+
